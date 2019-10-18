@@ -147,10 +147,18 @@ async function runEslint() {
 async function run() {
   const checkRun = new CheckRun({ name: checkName, event });
   await checkRun.create();
-  await installEslintPackagesAsync();
-  const eslintReport = await runEslint();
-
-  await checkRun.update(eslintReport);
+  let report = {};
+  try {
+    await installEslintPackagesAsync();
+    report = await runEslint();
+  } catch (e) {
+    report = {
+      conclusion: "failure",
+      output: { title: checkName, summary: `Balto error: ${e}` }
+    };
+  } finally {
+    await checkRun.update(report);
+  }
 }
 
 run();
