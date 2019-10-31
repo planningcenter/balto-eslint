@@ -1,3 +1,7 @@
+*Note:* There are known issues with the latest version of eslint currently that we are looking into. Older versions should be fine.
+
+---
+
 # 🐺 Balto
 
 Balto is Smart and Fast:
