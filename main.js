@@ -59,7 +59,9 @@ async function installEslintPackagesAsync () {
       ['npm i', ...versions, '--no-package-lock'].join(' ')
     )
     const peerVersions = await getPeerDependencies(error)
-    await easyExec(['npm i', ...peerVersions, '--no-package-lock'].join(' '))
+    if (peerVersions.length > 0) {
+      await easyExec(['npm i', ...peerVersions, '--no-package-lock'].join(' '))
+    }
   } finally {
     await io.mv('package.json-bak', 'package.json')
   }
