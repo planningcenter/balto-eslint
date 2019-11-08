@@ -12,29 +12,15 @@ const {
 const event = require(process.env.GITHUB_EVENT_PATH)
 const checkName = 'eslint'
 
-async function withCwd (directory, innerAction) {
-  const oldCwd = process.cwd()
-
-  try {
-    process.chdir(directory)
-
-    return await innerAction()
-  } finally {
-    process.chdir(oldCwd)
-  }
-}
-
 let yarnOutput = null
 
 async function getYarn () {
   if (yarnOutput) return yarnOutput
 
-  return await withCwd(GITHUB_WORKSPACE, async () => {
-    const { output } = await easyExec('yarn list --depth=0 --json')
+  const { output } = await easyExec('yarn list --depth=0 --json')
 
-    yarnOutput = JSON.parse(output)
-    return yarnOutput
-  })
+  yarnOutput = JSON.parse(output)
+  return yarnOutput
 }
 
 async function getPeerDependencies (error) {
@@ -66,19 +52,17 @@ async function installEslintPackagesAsync () {
     .filter(p => p.name.match(/eslint/))
     .map(p => p.name)
 
-  await withCwd(__dirname, async () => {
-    await io.mv('package.json', 'package.json-bak')
+  await io.mv('package.json', 'package.json-bak')
 
-    try {
-      const { error } = await easyExec(
-        ['npm i', ...versions, '--no-package-lock'].join(' ')
-      )
-      const peerVersions = await getPeerDependencies(error)
-      await easyExec(['npm i', ...peerVersions, '--no-package-lock'].join(' '))
-    } finally {
-      await io.mv('package.json-bak', 'package.json')
-    }
-  })
+  try {
+    const { error } = await easyExec(
+      ['npm i', ...versions, '--no-package-lock'].join(' ')
+    )
+    const peerVersions = await getPeerDependencies(error)
+    await easyExec(['npm i', ...peerVersions, '--no-package-lock'].join(' '))
+  } finally {
+    await io.mv('package.json-bak', 'package.json')
+  }
 }
 
 async function runEslint () {
@@ -149,6 +133,7 @@ async function run () {
   await checkRun.create()
   let report = {}
   try {
+    process.chdir(GITHUB_WORKSPACE)
     await installEslintPackagesAsync()
     report = await runEslint()
   } catch (e) {
