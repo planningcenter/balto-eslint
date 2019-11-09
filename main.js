@@ -74,7 +74,7 @@ async function runEslint () {
     `git diff --name-only --diff-filter AM ${compareSha}`
   )
 
-  const eslint = require('eslint')
+  const eslint = require(`${GITHUB_WORKSPACE}/node_modules/eslint`)
   const cli = new eslint.CLIEngine()
   const extensions = INPUT_EXTENSIONS.split(',')
 
