@@ -49,7 +49,7 @@ async function installEslintPackagesAsync () {
   const yarn = await getYarn()
 
   const versions = yarn.data.trees
-    .filter(p => p.name.match(/eslint/) || p.name.match(/prettier/))
+    .filter(p => p.name.match(/eslint/) || p.name.match(/prettier/) || p.name.match(/babel/))
     .map(p => p.name)
 
   await io.mv('package.json', 'package.json-bak')
