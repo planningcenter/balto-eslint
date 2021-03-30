@@ -1,5 +1,5 @@
 const io = require('@actions/io')
-const { easyExec } = require('./utils')
+const { easyExec, setOutput } = require('./utils')
 const { generateChangeRanges } = require('./git_utils')
 const CheckRun = require('./check_run')
 
@@ -145,6 +145,7 @@ async function run () {
     }
   } finally {
     await checkRun.update(report)
+    setOutput("issuesCount", report.output.annotations.length)
   }
 }
 
