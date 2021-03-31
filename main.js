@@ -10,7 +10,7 @@ const {
 } = process.env
 
 const event = require(process.env.GITHUB_EVENT_PATH)
-const checkName = 'eslint'
+const checkName = 'ESLint'
 
 let yarnOutput = null
 
