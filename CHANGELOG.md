@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.4 (2021-04-08)
+
 - Add `issuesCount` output (https://github.com/planningcenter/balto-eslint/pull/7)
 
 ## v0.3 (2019-12-03)
