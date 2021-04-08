@@ -1,3 +1,4 @@
+const os = require('os')
 const exec = require('@actions/exec')
 
 exports.easyExec = async function easyExec (commandWithArgs) {
@@ -32,4 +33,8 @@ exports.easyExec = async function easyExec (commandWithArgs) {
     error,
     exitCode
   }
+}
+
+exports.setOutput = function setOutput (key, value) {
+  process.stdout.write(`::set-output name=${key}::${value}` + os.EOL)
 }

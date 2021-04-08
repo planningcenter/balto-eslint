@@ -1,5 +1,5 @@
 const io = require('@actions/io')
-const { easyExec } = require('./utils')
+const { easyExec, setOutput } = require('./utils')
 const { generateChangeRanges } = require('./git_utils')
 const CheckRun = require('./check_run')
 
@@ -10,7 +10,7 @@ const {
 } = process.env
 
 const event = require(process.env.GITHUB_EVENT_PATH)
-const checkName = 'eslint'
+const checkName = 'ESLint'
 
 let yarnOutput = null
 
@@ -145,6 +145,7 @@ async function run () {
     }
   } finally {
     await checkRun.update(report)
+    setOutput("issuesCount", report.output.annotations.length)
   }
 }
 
