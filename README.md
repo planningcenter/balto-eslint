@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - uses: planningcenter/balto-eslint@v0.2
+      - uses: planningcenter/balto-eslint@v0.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
