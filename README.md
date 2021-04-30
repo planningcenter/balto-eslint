@@ -19,7 +19,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          # Change to package-lock.json if using npm in your own project
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+          
       - uses: planningcenter/balto-eslint@v0.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
