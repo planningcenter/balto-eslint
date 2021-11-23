@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fix: Find peer dependencies that begin with `@`
+
 ## v0.4 (2021-04-08)
 
 - Add `issuesCount` output (https://github.com/planningcenter/balto-eslint/pull/7)
