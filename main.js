@@ -141,7 +141,7 @@ async function run () {
   } catch (e) {
     report = {
       conclusion: 'failure',
-      output: { title: checkName, summary: `Balto error: ${e}` }
+      output: { title: checkName, summary: `Balto error: ${e}`, annotations: [] }
     }
   } finally {
     await checkRun.update(report)
