@@ -26,7 +26,7 @@ async function getYarn () {
 async function getPeerDependencies (error) {
   const peers = error
     .split('\n')
-    .map(l => l.match(/ requires a peer of (?<packageName>[^@]+)@/))
+    .map(l => l.match(/ requires a peer of (?<packageName>.+)@/))
     .filter(m => m)
     .map(m => m.groups.packageName)
 
