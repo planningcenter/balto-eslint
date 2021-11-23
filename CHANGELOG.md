@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Fix: Find peer dependencies that begin with `@`
+- Fix: Include empty annotations array on error
 
 ## v0.4 (2021-04-08)
 
