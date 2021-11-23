@@ -23,6 +23,16 @@ async function getYarn () {
   return yarnOutput
 }
 
+async function getESLint () {
+  const eslint = require(`${GITHUB_WORKSPACE}/node_modules/eslint`)
+
+  try {
+    return new eslint.ESLint()
+  } catch (e) {
+    throw `The ESLint Node.js API is not available. You're using \`eslint@${eslint.Linter.version}\`. Upgrade to 7+. (${e})`
+  }
+}
+
 async function getPeerDependencies (error) {
   const peers = error
     .split('\n')
@@ -74,16 +84,21 @@ async function runEslint () {
     `git diff --name-only --diff-filter AM ${compareSha}`
   )
 
-  const eslint = require(`${GITHUB_WORKSPACE}/node_modules/eslint`)
-  const cli = new eslint.CLIEngine()
+  const cli = await getESLint()
+
   const extensions = INPUT_EXTENSIONS.split(',')
 
   const paths = output
     .split('\n')
     .filter(path => extensions.some(e => path.endsWith(`.${e}`)))
-  const report = cli.executeOnFiles(paths)
+  const results = await cli.lintFiles(paths)
 
-  const { results, errorCount, warningCount } = report
+  const { errorCount, warningCount } = results.reduce((acc, current) => {
+    return {
+      errorCount: acc.errorCount + current.errorCount,
+      warningCount: acc.warningCount + current.warningCount
+    }
+  })
 
   const levels = ['', 'warning', 'failure']
 
@@ -93,8 +108,9 @@ async function runEslint () {
     const result = results[resultsIndex]
     const { filePath, messages } = result
     const path = filePath.substring(GITHUB_WORKSPACE.length + 1)
+    const isPathIgnored = await cli.isPathIgnored(path)
 
-    if (cli.isPathIgnored(path)) continue
+    if (isPathIgnored) continue
 
     const changeRanges = await generateChangeRanges(path, { compareSha })
 

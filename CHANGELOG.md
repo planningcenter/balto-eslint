@@ -4,6 +4,7 @@
 
 - Fix: Find peer dependencies that begin with `@`
 - Fix: Include empty annotations array on error
+- Feature: Switch to `eslint@7`'s new Node API
 
 ## v0.4 (2021-04-08)
 
