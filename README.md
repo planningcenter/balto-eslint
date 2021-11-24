@@ -43,6 +43,7 @@ jobs:
 | Name | Description | Required | Default |
 |:-:|:-:|:-:|:-:|
 | `conclusionLevel` | Which check run conclusion type to use when annotations are created (`"neutral"` or `"failure"` are most common). See [GitHub Checks documentation](https://developer.github.com/v3/checks/runs/#parameters) for all available options.  | no | `"neutral"` |
+| `failureLevel` | The lowest annotation level to fail on | no | `"error"` |
 | `extensions` | A comma separated list of extensions to run ESLint on | no | `"js"` |
 
 ## Outputs

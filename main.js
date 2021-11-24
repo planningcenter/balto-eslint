@@ -6,7 +6,8 @@ const CheckRun = require('./check_run')
 const {
   GITHUB_WORKSPACE,
   INPUT_EXTENSIONS,
-  INPUT_CONCLUSIONLEVEL
+  INPUT_CONCLUSIONLEVEL,
+  INPUT_FAILURELEVEL
 } = process.env
 
 const event = require(process.env.GITHUB_EVENT_PATH)
@@ -120,8 +121,10 @@ async function runEslint () {
     }
   }
 
+  const totalCount = INPUT_FAILURELEVEL === "warning" ? errorCount + warningCount : errorCount
+
   return {
-    conclusion: errorCount > 0 ? INPUT_CONCLUSIONLEVEL : 'success',
+    conclusion: totalCount > 0 ? INPUT_CONCLUSIONLEVEL : 'success',
     output: {
       title: checkName,
       summary: `${errorCount} error(s), ${warningCount} warning(s) found`,

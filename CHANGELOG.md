@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Feature: Allow specifying lowest failure level with `failureLevel`
 - Fix: Find peer dependencies that begin with `@`
 - Fix: Include empty annotations array on error
 
