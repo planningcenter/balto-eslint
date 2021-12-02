@@ -15,6 +15,10 @@ inputs:
     description: 'Which check run conclusion type to use when annotations are created ("neutral" or "failure" are most common)'
     required: false
     default: "neutral"
+  dependencies:
+    description: 'An JSON-encoded array of dependencies (other than `eslint`) that `eslint` requires in order to complete the check'
+    required: false
+    default: '[]'
 outputs:
   issuesCount:
     description: "Number of eslint violations found"

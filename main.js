@@ -6,7 +6,8 @@ const CheckRun = require('./check_run')
 const {
   GITHUB_WORKSPACE,
   INPUT_EXTENSIONS,
-  INPUT_CONCLUSIONLEVEL
+  INPUT_CONCLUSIONLEVEL,
+  INPUT_DEPENDENCIES
 } = process.env
 
 const event = require(process.env.GITHUB_EVENT_PATH)
@@ -45,11 +46,15 @@ async function getPeerDependencies (error) {
   return versions
 }
 
+const BUILT_IN_DEPENDENCIES = ["eslint"]
+
 async function installEslintPackagesAsync () {
   const yarn = await getYarn()
 
+  const dependencies = [...BUILT_IN_DEPENDENCIES, ...JSON.parse(INPUT_DEPENDENCIES)]
+
   const versions = yarn.data.trees
-    .filter(p => p.name.match(/eslint/) || p.name.match(/prettier/))
+    .filter(p => dependencies.some(d => p.name.match(d)))
     .map(p => p.name)
 
   await io.mv('package.json', 'package.json-bak')
