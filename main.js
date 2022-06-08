@@ -1,4 +1,5 @@
 const io = require('@actions/io')
+const semver = require('semver')
 const { easyExec, setOutput } = require('./utils')
 const { generateChangeRanges } = require('./git_utils')
 const CheckRun = require('./check_run')
@@ -10,6 +11,8 @@ const {
   INPUT_FAILURELEVEL
 } = process.env
 
+const eslint = require(`${GITHUB_WORKSPACE}/node_modules/eslint`)
+const eslintVersion = require('./node_modules/eslint/package.json').version
 const event = require(process.env.GITHUB_EVENT_PATH)
 const checkName = 'ESLint'
 
@@ -68,21 +71,42 @@ async function installEslintPackagesAsync () {
   }
 }
 
+async function gatherReportForEslintSixOrLower (paths) {
+  const cli = new eslint.CLIEngine()
+  return cli.executeOnFiles(paths)
+}
+
+async function gatherReportForEslintSevenOrGreater (paths) {
+  const linter = new eslint.ESLint()
+  const report = await linter.lintFiles(paths)
+
+  return report.reduce(
+    ({ results, errorCount, warningCount }, result) => ({
+      results: [...results, result],
+      errorCount: (errorCount += result.errorCount),
+      warningCount: (warningCount += result.warningCount)
+    }),
+    { results: [], errorCount: 0, warningCount: 0 }
+  )
+}
+
 async function runEslint () {
   const compareSha = event.pull_request.base.sha
 
   const { output } = await easyExec(
     `git diff --name-only --diff-filter AM ${compareSha}`
   )
-
-  const eslint = require(`${GITHUB_WORKSPACE}/node_modules/eslint`)
-  const cli = new eslint.CLIEngine()
   const extensions = INPUT_EXTENSIONS.split(',')
 
   const paths = output
     .split('\n')
     .filter(path => extensions.some(e => path.endsWith(`.${e}`)))
-  const report = cli.executeOnFiles(paths)
+
+  const eslintVersionSevenOrGreater = semver.gte(eslintVersion, '7.0.0')
+
+  const report = eslintVersionSevenOrGreater
+    ? gatherReportForEslintSevenOrGreater(paths)
+    : gatherReportForEslintSixOrLower(paths)
 
   const { results, errorCount, warningCount } = report
 

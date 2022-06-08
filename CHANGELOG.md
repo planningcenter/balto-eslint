@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Feature: Support ESLint's new v7+ API (eslint.CLIEngine() has been removed as of v8)
+
 ## v0.5 (2022-03-06)
 
 - Feature: Allow specifying lowest failure level with `failureLevel`
