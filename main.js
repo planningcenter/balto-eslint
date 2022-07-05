@@ -96,7 +96,8 @@ async function runEslint () {
   const { output } = await easyExec(
     `git diff --name-only --diff-filter AM ${compareSha}`
   )
-  const eslintVersion = require("./node_modules/eslint/package.json").version;
+  const eslintVersion = 
+    require(`${GITHUB_WORKSPACE}/node_modules/eslint/package.json`).version;
   const extensions = INPUT_EXTENSIONS.split(',')
 
   const paths = output
