@@ -71,7 +71,7 @@ async function installEslintPackagesAsync () {
   }
 }
 
-async function gatherReportForEslintSixOrLower (paths) {
+function gatherReportForEslintSixOrLower (paths) {
   const cli = new eslint.CLIEngine()
   return cli.executeOnFiles(paths)
 }
@@ -104,8 +104,8 @@ async function runEslint () {
 
   const eslintVersionSevenOrGreater = semver.gte(eslintVersion, '7.0.0')
 
-  const report = eslintVersionSevenOrGreater
-    ? gatherReportForEslintSevenOrGreater(paths)
+  const report = eslintVersionSevenOrGreater 
+    ? await gatherReportForEslintSevenOrGreater(paths)
     : gatherReportForEslintSixOrLower(paths)
 
   const { results, errorCount, warningCount } = report
