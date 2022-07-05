@@ -83,8 +83,8 @@ async function gatherReportForEslintSevenOrGreater (paths) {
   return report.reduce(
     ({ results, errorCount, warningCount }, result) => ({
       results: [...results, result],
-      errorCount: (errorCount += result.errorCount),
-      warningCount: (warningCount += result.warningCount)
+      errorCount: errorCount + result.errorCount,
+      warningCount: warningCount + result.warningCount
     }),
     { results: [], errorCount: 0, warningCount: 0 }
   )
