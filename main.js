@@ -11,8 +11,6 @@ const {
   INPUT_FAILURELEVEL
 } = process.env
 
-const eslint = require(`${GITHUB_WORKSPACE}/node_modules/eslint`)
-const eslintVersion = require('./node_modules/eslint/package.json').version
 const event = require(process.env.GITHUB_EVENT_PATH)
 const checkName = 'ESLint'
 
@@ -72,11 +70,13 @@ async function installEslintPackagesAsync () {
 }
 
 function gatherReportForEslintSixOrLower (paths) {
+  const eslint = require(`${GITHUB_WORKSPACE}/node_modules/eslint`);
   const cli = new eslint.CLIEngine()
   return cli.executeOnFiles(paths)
 }
 
 async function gatherReportForEslintSevenOrGreater (paths) {
+  const eslint = require(`${GITHUB_WORKSPACE}/node_modules/eslint`);
   const linter = new eslint.ESLint()
   const report = await linter.lintFiles(paths)
 
@@ -96,6 +96,7 @@ async function runEslint () {
   const { output } = await easyExec(
     `git diff --name-only --diff-filter AM ${compareSha}`
   )
+  const eslintVersion = require("./node_modules/eslint/package.json").version;
   const extensions = INPUT_EXTENSIONS.split(',')
 
   const paths = output
