@@ -2,7 +2,6 @@
 
 Balto is Smart and Fast:
 
-* Installs _your_ version of eslint
 * Installs _your_ versions of eslint and eslint plugins
 * _Only_ runs on files that have changed
 * _Only_ annotates lines that have changed
@@ -17,20 +16,10 @@ on: [pull_request]
 jobs:
   lint:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          # Change to package-lock.json if using npm in your own project
-          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-          
       - uses: planningcenter/balto-eslint@v0.6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
