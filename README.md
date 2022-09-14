@@ -31,7 +31,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
           
-      - uses: planningcenter/balto-eslint@v0.4
+      - uses: planningcenter/balto-eslint@v0.6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
