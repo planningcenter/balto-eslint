@@ -23,6 +23,16 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      # Optional but may be helpful depending on the ESLint plugins your project uses
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          # Change to package-lock.json if using npm in your own project
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - uses: planningcenter/balto-eslint@v0.6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
