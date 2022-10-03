@@ -12,7 +12,7 @@ const {
 } = process.env
 
 const eslint = require(`${GITHUB_WORKSPACE}/node_modules/eslint`)
-const eslintVersion = require('./node_modules/eslint/package.json').version
+const eslintVersion = require(`${GITHUB_WORKSPACE}/node_modules/eslint/package.json`).version
 const event = require(process.env.GITHUB_EVENT_PATH)
 const checkName = 'ESLint'
 
