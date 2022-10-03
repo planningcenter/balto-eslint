@@ -16,6 +16,8 @@ const eslintVersion = require(`${GITHUB_WORKSPACE}/node_modules/eslint/package.j
 const event = require(process.env.GITHUB_EVENT_PATH)
 const checkName = 'ESLint'
 
+let eslintVersionSevenOrGreater = null
+let linter = null
 let yarnOutput = null
 
 async function getYarn () {
@@ -71,20 +73,29 @@ async function installEslintPackagesAsync () {
   }
 }
 
-async function gatherReportForEslintSixOrLower (paths) {
-  const cli = new eslint.CLIEngine()
-  return cli.executeOnFiles(paths)
+async function setupEslintVersionAndLinter () {
+  const eslintVersion =
+    require(`${GITHUB_WORKSPACE}/node_modules/eslint/package.json`).version
+  eslintVersionSevenOrGreater = semver.gte(eslintVersion, '7.0.0')
+
+  const eslint = require(`${GITHUB_WORKSPACE}/node_modules/eslint`)
+  linter = eslintVersionSevenOrGreater
+    ? new eslint.ESLint()
+    : new eslint.CLIEngine()
+}
+
+function gatherReportForEslintSixOrLower (paths) {
+  return linter.executeOnFiles(paths)
 }
 
 async function gatherReportForEslintSevenOrGreater (paths) {
-  const linter = new eslint.ESLint()
   const report = await linter.lintFiles(paths)
 
   return report.reduce(
     ({ results, errorCount, warningCount }, result) => ({
       results: [...results, result],
-      errorCount: (errorCount += result.errorCount),
-      warningCount: (warningCount += result.warningCount)
+      errorCount: errorCount + result.errorCount,
+      warningCount: warningCount + result.warningCount
     }),
     { results: [], errorCount: 0, warningCount: 0 }
   )
@@ -102,10 +113,8 @@ async function runEslint () {
     .split('\n')
     .filter(path => extensions.some(e => path.endsWith(`.${e}`)))
 
-  const eslintVersionSevenOrGreater = semver.gte(eslintVersion, '7.0.0')
-
   const report = eslintVersionSevenOrGreater
-    ? gatherReportForEslintSevenOrGreater(paths)
+    ? await gatherReportForEslintSevenOrGreater(paths)
     : gatherReportForEslintSixOrLower(paths)
 
   const { results, errorCount, warningCount } = report
@@ -119,7 +128,7 @@ async function runEslint () {
     const { filePath, messages } = result
     const path = filePath.substring(GITHUB_WORKSPACE.length + 1)
 
-    if (cli.isPathIgnored(path)) continue
+    if (await linter.isPathIgnored(path)) continue
 
     const changeRanges = await generateChangeRanges(path, { compareSha })
 
@@ -164,6 +173,7 @@ async function run () {
   try {
     process.chdir(GITHUB_WORKSPACE)
     await installEslintPackagesAsync()
+    await setupEslintVersionAndLinter()
     report = await runEslint()
   } catch (e) {
     report = {
