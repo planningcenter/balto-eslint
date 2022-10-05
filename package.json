@@ -10,9 +10,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@actions/exec": "^1.0.1",
+    "@actions/exec": "^1.1.1",
     "@actions/github": "^1.1.0",
-    "@actions/io": "^1.0.1"
+    "@actions/io": "^1.1.2"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.34.0"
