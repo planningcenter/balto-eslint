@@ -12,5 +12,8 @@
     "@actions/exec": "^1.0.1",
     "@actions/github": "^1.1.0",
     "@actions/io": "^1.0.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.34.0"
   }
 }
