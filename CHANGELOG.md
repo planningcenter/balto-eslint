@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Switch to NCC for building (should not affect consumers of this action) #18
+
+## v0.6 (2022-09-14)
+
 - Feature: Support ESLint's new v7+ API (eslint.CLIEngine() has been removed as of v8)
 
 ## v0.5 (2022-03-06)
