@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Switch to NCC for building (should not affect consumers of this action) #18
+- Switch to NCC for building (should not affect consumers of this action) (https://github.com/planningcenter/balto-eslint/pull/18)
 
 ## v0.6 (2022-09-14)
 
