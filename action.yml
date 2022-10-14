@@ -19,6 +19,12 @@ inputs:
     description: 'The lowest annotation level to fail on ("warning" or "error")'
     required: false
     default: "error"
+  dependencyInstallMode:
+    description: "'smart'  or 'none'. Control how dependencies are installed (if
+      at all). Smart (requires yarn) will attempt to install the least amount of
+      packages to successfully run eslint."
+    required: false
+    default: 'smart'
 outputs:
   issuesCount:
     description: "Number of eslint violations found"

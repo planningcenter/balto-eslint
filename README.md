@@ -2,11 +2,19 @@
 
 Balto is Smart and Fast:
 
-* Installs _your_ versions of eslint and eslint plugins
+* Installs _your_ versions of eslint and eslint plugins (optionally)
 * _Only_ runs on files that have changed
 * _Only_ annotates lines that have changed
 
-Sample config (place in `.github/workflows/balto.yml`):
+## Requirements
+
+* Default configuration of `dependencyInstallMode` requires `yarn` to be used
+  * If you use npm you will need to set `dependencyInstallMode` to `'none'` and
+    handle the install yourself.
+
+## Sample config
+
+(place in `.github/workflows/balto.yml`):
 
 ```yaml
 name: Balto
@@ -33,7 +41,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - uses: planningcenter/balto-eslint@v0.6
+      - uses: planningcenter/balto-eslint@v0.7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -47,6 +55,7 @@ jobs:
 | `conclusionLevel` | Which check run conclusion type to use when annotations are created (`"neutral"` or `"failure"` are most common). See [GitHub Checks documentation](https://developer.github.com/v3/checks/runs/#parameters) for all available options.  | no | `"neutral"` |
 | `failureLevel` | The lowest annotation level to fail on | no | `"error"` |
 | `extensions` | A comma separated list of extensions to run ESLint on | no | `"js"` |
+| `dependencyInstallMode` | `"smart"` or `"none"`. Control how dependencies are installed (if at all). Smart (requires yarn) will attempt to install the least amount of packages to successfully run eslint.| no | `"smart"` |
 
 ## Outputs
 

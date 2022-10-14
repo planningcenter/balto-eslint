@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- Switch to NCC for building (should not affect consumers of this action) (https://github.com/planningcenter/balto-eslint/pull/18)
+## v0.7 (2022-10-14)
+
+- Feature: configure dependency installation with `dependencyInstallMode` (https://github.com/planningcenter/balto-eslint/pull/20)
+- Internal only: Switch to NCC for building (https://github.com/planningcenter/balto-eslint/pull/18)
 
 ## v0.6 (2022-09-14)
 

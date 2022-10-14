@@ -8,7 +8,8 @@ const {
   GITHUB_WORKSPACE,
   INPUT_EXTENSIONS,
   INPUT_CONCLUSIONLEVEL,
-  INPUT_FAILURELEVEL
+  INPUT_FAILURELEVEL,
+  INPUT_DEPENDENCYINSTALLMODE
 } = process.env
 
 const event = require(process.env.GITHUB_EVENT_PATH)
@@ -170,7 +171,7 @@ async function run () {
   let report = {}
   try {
     process.chdir(GITHUB_WORKSPACE)
-    await installEslintPackagesAsync()
+    if (INPUT_DEPENDENCYINSTALLMODE.toLowerCase() === "smart") await installEslintPackagesAsync()
     await setupEslintVersionAndLinter()
     report = await runEslint()
   } catch (e) {
