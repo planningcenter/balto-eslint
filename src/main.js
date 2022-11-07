@@ -13,6 +13,7 @@ const {
 } = process.env
 
 const event = require(process.env.GITHUB_EVENT_PATH)
+
 const checkName = 'ESLint'
 
 let eslintVersionSevenOrGreater = null
