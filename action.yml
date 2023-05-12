@@ -1,7 +1,7 @@
 name: "Balto - Eslint"
 description: "Run eslint on your repo"
 runs:
-  using: node12
+  using: node16
   main: dist/index.js
 branding:
   icon: life-buoy
