@@ -52,7 +52,7 @@ jobs:
 
 | Name | Description | Required | Default |
 |:-:|:-:|:-:|:-:|
-| `conclusionLevel` | Which check run conclusion type to use when annotations are created (`"neutral"` or `"failure"` are most common). See [GitHub Checks documentation](https://developer.github.com/v3/checks/runs/#parameters) for all available options.  | no | `"neutral"` |
+| `conclusionLevel` | Which workflow status should be used when annotations are created. Currently, `"failure"` and `"action_required"` show as failures, while everything else (including `"neutral"`) show as successful | no | `"neutral"` |
 | `failureLevel` | The lowest annotation level to fail on | no | `"error"` |
 | `extensions` | A comma separated list of extensions to run ESLint on | no | `"js"` |
 | `dependencyInstallMode` | `"smart"` or `"none"`. Control how dependencies are installed (if at all). Smart (requires yarn) will attempt to install the least amount of packages to successfully run eslint.| no | `"smart"` |

@@ -2,7 +2,6 @@ const io = require('@actions/io')
 const semver = require('semver')
 const { easyExec, setOutput } = require('./utils')
 const { generateChangeRanges } = require('./git_utils')
-const CheckRun = require('./check_run')
 
 const {
   GITHUB_WORKSPACE,
@@ -169,9 +168,21 @@ async function runEslint () {
   }
 }
 
+function annotationToOutputCommand(annotation) {
+  const { path: file, start_line: startLine, end_line: endLine, annotation_level, message } = annotation
+  switch (annotation_level) {
+    case "failure":
+      return core.error(message, { file, startLine, endLine, })
+    case "warning":
+      return core.warning(message, { file, startLine, endLine, })
+    case "":
+      return core.info(message, { file, startLine, endLine, })
+    default:
+      break;
+  }
+}
+
 async function run () {
-  const checkRun = new CheckRun({ name: checkName, event })
-  await checkRun.create()
   let report = {}
   try {
     process.chdir(GITHUB_WORKSPACE)
@@ -179,13 +190,13 @@ async function run () {
     await setupEslintVersionAndLinter()
     report = await runEslint()
   } catch (e) {
-    report = {
-      conclusion: 'failure',
-      output: { title: checkName, summary: `Balto error: ${e}`, annotations: [] }
-    }
+    core.setFailed(`Balto error: ${e}`)
   } finally {
-    await checkRun.update(report)
+    report.output.annotations.forEach(annotationToOutputCommand)
     setOutput("issuesCount", report.output.annotations.length)
+    if (report.conclusion === "action_required" || report.conclusion === "failure") {
+      core.setFailed(`Failing because ${report.output.annotations.length} annotation(s) found & conclusionLevel is set to ${INPUT_CONCLUSIONLEVEL}`)
+    }
   }
 }
 
