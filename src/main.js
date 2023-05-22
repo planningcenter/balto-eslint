@@ -1,4 +1,5 @@
 const io = require('@actions/io')
+const core = require('@actions/core')
 const semver = require('semver')
 const { easyExec, setOutput } = require('./utils')
 const { generateChangeRanges } = require('./git_utils')
@@ -119,6 +120,8 @@ async function runEslint () {
   let errorCount = 0
   let warningCount = 0
 
+  core.debug(`Raw report from eslint: ${JSON.stringify(report, null, 2)}`)
+
   const levels = ['', 'warning', 'failure']
 
   const annotations = []
@@ -192,6 +195,7 @@ async function run () {
   } catch (e) {
     core.setFailed(`Balto error: ${e}`)
   } finally {
+    core.debug(`Generated report: ${JSON.stringify(report, null, 2)}`)
     report.output.annotations.forEach(annotationToOutputCommand)
     setOutput("issuesCount", report.output.annotations.length)
     if (report.conclusion === "action_required" || report.conclusion === "failure") {
