@@ -16244,7 +16244,9 @@ async function runEslint () {
     ? await gatherReportForEslintSevenOrGreater(paths)
     : gatherReportForEslintSixOrLower(paths)
 
-  const { results, errorCount, warningCount } = report
+  const { results } = report
+  let errorCount = 0
+  let warningCount = 0
 
   const levels = ['', 'warning', 'failure']
 
@@ -16270,6 +16272,8 @@ async function runEslint () {
 
       if (!changeRanges.some(r => r.doesInclude(line))) continue
 
+      errorCount += msg.errorCount
+      warningCount += msg.warningCount
       const annotationLevel = levels[severity]
       annotations.push({
         path,
