@@ -19,7 +19,7 @@ let eslintVersionSevenOrGreater = null
 let linter = null
 let yarnOutput = null
 
-async function getYarn () {
+async function getYarn() {
   if (yarnOutput) return yarnOutput
 
   const { output } = await easyExec('yarn list --depth=0 --json')
@@ -28,7 +28,7 @@ async function getYarn () {
   return yarnOutput
 }
 
-async function getPeerDependencies (error) {
+async function getPeerDependencies(error) {
   const peers = error
     .split('\n')
     .map(l => l.match(/ requires a peer of (?<packageName>.+)@/))
@@ -50,7 +50,7 @@ async function getPeerDependencies (error) {
   return versions
 }
 
-async function installEslintPackagesAsync () {
+async function installEslintPackagesAsync() {
   const yarn = await getYarn()
 
   const versions = yarn.data.trees
@@ -72,7 +72,7 @@ async function installEslintPackagesAsync () {
   }
 }
 
-async function setupEslintVersionAndLinter () {
+async function setupEslintVersionAndLinter() {
   const eslintVersion =
     require(`${GITHUB_WORKSPACE}/node_modules/eslint/package.json`).version
   eslintVersionSevenOrGreater = semver.gte(eslintVersion, '7.0.0')
@@ -83,11 +83,11 @@ async function setupEslintVersionAndLinter () {
     : new eslint.CLIEngine()
 }
 
-function gatherReportForEslintSixOrLower (paths) {
+function gatherReportForEslintSixOrLower(paths) {
   return linter.executeOnFiles(paths)
 }
 
-async function gatherReportForEslintSevenOrGreater (paths) {
+async function gatherReportForEslintSevenOrGreater(paths) {
   const report = await linter.lintFiles(paths)
 
   return report.reduce(
@@ -100,7 +100,7 @@ async function gatherReportForEslintSevenOrGreater (paths) {
   )
 }
 
-async function runEslint () {
+async function runEslint() {
   const compareSha = event.pull_request.base.sha
 
   const { output } = await easyExec(
@@ -146,7 +146,7 @@ async function runEslint () {
 
       if (!changeRanges.some(r => r.doesInclude(line))) continue
 
-      core.debug(`Message: ${msg}`)
+      core.debug(`Message: ${JSON.stringify(msg, null, 2)}`)
 
       // TODO: figure out how this goes from 0 to NaN //
       errorCount += msg.errorCount
@@ -188,7 +188,7 @@ function annotationToOutputCommand(annotation) {
   }
 }
 
-async function run () {
+async function run() {
   let report = {}
   try {
     process.chdir(GITHUB_WORKSPACE)
