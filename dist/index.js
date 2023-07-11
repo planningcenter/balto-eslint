@@ -5839,7 +5839,8 @@ async function runEslint() {
 
       if (!changeRanges.some(r => r.doesInclude(line))) continue
 
-      core.debug(`Message: ${JSON.stringify(msg, null, 2)}`)
+      core.debug(`errorCount is ${errorCount}, adding ${msg.errorCount}`)
+      core.debug(`warningCount is ${warningCount}, adding ${msg.warningCount}`)
 
       // TODO: figure out how this goes from 0 to NaN //
       errorCount += msg.errorCount
