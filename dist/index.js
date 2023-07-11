@@ -5839,6 +5839,9 @@ async function runEslint () {
 
       if (!changeRanges.some(r => r.doesInclude(line))) continue
 
+      core.debug(`Message: ${msg}`)
+
+      // TODO: figure out how this goes from 0 to NaN //
       errorCount += msg.errorCount
       warningCount += msg.warningCount
       const annotationLevel = levels[severity]
