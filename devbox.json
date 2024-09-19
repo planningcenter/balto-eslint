@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
+  "packages": [
+    "nodejs@20",
+    "ruby@latest",
+    "act@latest"
+  ],
+  "env": {"DEVBOX_COREPACK_ENABLED": "true"},
+  "shell": {
+    "scripts": {
+      "setup": [
+        "gem install rerun",
+        "npm ci"
+      ],
+      "test": "npm run test",
+      "dev":  "npm run dev",
+      "rebuildtests": [
+        "git diff --quiet || { echo 'Working tree is not clean, exiting.'; exit 1; }",
+        "cd test/v6 && rm existing.js new.js some_file_that_eslint_should_ignore && cd ../..",
+        "cd test/v7 && rm existing.js new.js some_file_that_eslint_should_ignore && cd ../..",
+        "cd test/v8 && rm existing.js new.js some_file_that_eslint_should_ignore && cd ../..",
+        "cd test/v9 && rm existing.js new.js some_file_that_eslint_should_ignore && cd ../..",
+        "cp test/snapshots/base/* test/v6",
+        "cp test/snapshots/base/* test/v7",
+        "cp test/snapshots/base/* test/v8",
+        "cp test/snapshots/base/* test/v9",
+        "git add . && git commit -m 'Undo simulated changes'",
+        "echo \"{ \\\"pull_request\\\": { \\\"base\\\": { \\\"sha\\\": \\\"$(git rev-parse HEAD)\\\" } } }\" > test/pull_request_event_payload.json",
+        "git add . && git commit -m 'Update test target sha'",
+        "cp test/snapshots/updates/* test/v6",
+        "cp test/snapshots/updates/* test/v7",
+        "cp test/snapshots/updates/* test/v8",
+        "cp test/snapshots/updates/* test/v9",
+        "git add . && git commit -m 'Simulate changes'"
+      ]
+    }
+  }
+}

@@ -1,0 +1,56 @@
+name: Test
+on: [pull_request]
+
+jobs:
+
+  balto-eslint-v9:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+      - run: "npm ci"
+        working-directory: "test/v9"
+      - uses: ./
+        with:
+          working-directory: "test/v9"
+
+  balto-eslint-v8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+      - run: "npm ci"
+        working-directory: "test/v8"
+      - uses: ./
+        with:
+          working-directory: "test/v8"
+
+  balto-eslint-v7:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+      - run: "npm ci"
+        working-directory: "test/v7"
+      - uses: ./
+        with:
+          working-directory: "test/v7"
+
+  balto-eslint-v6:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+      - run: "npm ci"
+        working-directory: "test/v6"
+      - uses: ./
+        with:
+          working-directory: "test/v6"
