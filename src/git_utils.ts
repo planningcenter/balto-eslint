@@ -16,6 +16,7 @@ export class ChangeRange {
 
 export async function generateChangeRanges(path: string, compareSha: string) {
   const { stdout } = await getExecOutput(
+    // Don't want any change context or colors
     `git diff -U0 --no-color ${compareSha} -- ${path}`,
   )
   const udfLines = stdout.split("\n").filter((l) => l.match(/^@@.+\+\d/))

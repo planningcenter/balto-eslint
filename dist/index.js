@@ -26268,7 +26268,9 @@ class ChangeRange {
 }
 exports.ChangeRange = ChangeRange;
 async function generateChangeRanges(path, compareSha) {
-    const { stdout } = await (0, exec_1.getExecOutput)(`git diff -U0 --no-color ${compareSha} -- ${path}`);
+    const { stdout } = await (0, exec_1.getExecOutput)(
+    // Don't want any change context or colors
+    `git diff -U0 --no-color ${compareSha} -- ${path}`);
     const udfLines = stdout.split("\n").filter((l) => l.match(/^@@.+\+\d/));
     return udfLines
         .map((l) => l.match(/\+(?<rangeStart>\d+)(?:,(?<rangeLength>\d*))?/))
