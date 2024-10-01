@@ -24,7 +24,7 @@ async function run() {
 
   let compareSha = event.pull_request.base.sha
 
-  core.debug("Compare sha: ${compareSha}")
+  core.debug(`Compare sha: ${compareSha}`)
 
   let changedFiles = []
   if (workingDirectory) {

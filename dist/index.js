@@ -26347,7 +26347,7 @@ async function run() {
     let event = require(eventPath);
     core.debug(`Event: ${event}`);
     let compareSha = event.pull_request.base.sha;
-    core.debug("Compare sha: ${compareSha}");
+    core.debug(`Compare sha: ${compareSha}`);
     let changedFiles = [];
     if (workingDirectory) {
         changedFiles = await (0, git_utils_1.detectChangedFilesInFolder)(compareSha, workingDirectory);
