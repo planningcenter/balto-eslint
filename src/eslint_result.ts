@@ -8,7 +8,7 @@ export type ResultObject = {
 
 type EslintMessage = {
   ruleId: string
-  severity: number
+  severity: Severity
   message: string
   line: number
   column: number
@@ -17,6 +17,11 @@ type EslintMessage = {
   endLine: number
   endColumn: number
   suggestions: any[]
+}
+
+enum Severity {
+  Warning = 1,
+  Error = 2,
 }
 
 export class EslintResult {
@@ -55,10 +60,10 @@ export class EslintResult {
         endColumn: msg.endColumn,
       }
       switch (msg.severity) {
-        case 1:
+        case Severity.Warning:
           core.warning(msg.message, options)
           break
-        case 2:
+        case Severity.Error:
           core.error(msg.message, options)
         default:
           break

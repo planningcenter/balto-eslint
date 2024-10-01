@@ -26179,6 +26179,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.EslintResult = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const git_utils_1 = __nccwpck_require__(5601);
+var Severity;
+(function (Severity) {
+    Severity[Severity["Warning"] = 1] = "Warning";
+    Severity[Severity["Error"] = 2] = "Error";
+})(Severity || (Severity = {}));
 class EslintResult {
     relevantWarningCount = 0;
     relevantErrorCount = 0;
@@ -26206,10 +26211,10 @@ class EslintResult {
                 endColumn: msg.endColumn,
             };
             switch (msg.severity) {
-                case 1:
+                case Severity.Warning:
                     core.warning(msg.message, options);
                     break;
-                case 2:
+                case Severity.Error:
                     core.error(msg.message, options);
                 default:
                     break;
