@@ -6,8 +6,6 @@ export type ResultObject = {
   messages: EslintMessage[]
 }
 
-export type EslintResultInstance = InstanceType<typeof EslintResult>
-
 type EslintMessage = {
   ruleId: string
   severity: number
@@ -25,20 +23,23 @@ export class EslintResult {
   public relevantWarningCount: number = 0
   public relevantErrorCount: number = 0
   private resultObject: ResultObject
-  private compareSha: string
-  private changeRanges?: ChangeRange[]
+  private changeRanges: ChangeRange[]
   private relevantMessages: EslintMessage[] = []
 
-  constructor(resultObject: ResultObject, compareSha: string) {
-    this.resultObject = resultObject
-    this.compareSha = compareSha
+  static async for(
+    resultObject: ResultObject,
+    compareSha: string,
+  ): Promise<EslintResult> {
+    const changeRanges = await generateChangeRanges(
+      resultObject.filePath,
+      compareSha,
+    )
+    return new EslintResult(resultObject, changeRanges)
   }
 
-  async asyncInitialize() {
-    this.changeRanges = await generateChangeRanges(
-      this.resultObject.filePath,
-      this.compareSha,
-    )
+  constructor(resultObject: ResultObject, changeRanges: ChangeRange[]) {
+    this.resultObject = resultObject
+    this.changeRanges = changeRanges
     this.findRelevantMessages()
     this.calculateCounts()
   }
@@ -67,7 +68,7 @@ export class EslintResult {
 
   private findRelevantMessages() {
     this.relevantMessages = this.messages.filter((m) =>
-      this.changeRanges?.some((changeRange) => changeRange.doesInclude(m.line)),
+      this.changeRanges.some((changeRange) => changeRange.doesInclude(m.line)),
     )
   }
 

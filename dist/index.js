@@ -26183,15 +26183,15 @@ class EslintResult {
     relevantWarningCount = 0;
     relevantErrorCount = 0;
     resultObject;
-    compareSha;
     changeRanges;
     relevantMessages = [];
-    constructor(resultObject, compareSha) {
-        this.resultObject = resultObject;
-        this.compareSha = compareSha;
+    static async for(resultObject, compareSha) {
+        const changeRanges = await (0, git_utils_1.generateChangeRanges)(resultObject.filePath, compareSha);
+        return new EslintResult(resultObject, changeRanges);
     }
-    async asyncInitialize() {
-        this.changeRanges = await (0, git_utils_1.generateChangeRanges)(this.resultObject.filePath, this.compareSha);
+    constructor(resultObject, changeRanges) {
+        this.resultObject = resultObject;
+        this.changeRanges = changeRanges;
         this.findRelevantMessages();
         this.calculateCounts();
     }
@@ -26217,7 +26217,7 @@ class EslintResult {
         });
     }
     findRelevantMessages() {
-        this.relevantMessages = this.messages.filter((m) => this.changeRanges?.some((changeRange) => changeRange.doesInclude(m.line)));
+        this.relevantMessages = this.messages.filter((m) => this.changeRanges.some((changeRange) => changeRange.doesInclude(m.line)));
     }
     calculateCounts() {
         this.relevantMessages.forEach((msg) => {
@@ -26363,10 +26363,10 @@ async function run() {
     // expected and we don't want to stop execution because of it.
     { ignoreReturnCode: true });
     let eslintJson = JSON.parse(eslintOut);
-    let eslintResults = eslintJson.map((resultObject) => new eslint_result_1.EslintResult(resultObject, compareSha));
-    await Promise.all(eslintResults.map((r) => r.asyncInitialize()));
+    let promises = eslintJson.map((resultObject) => eslint_result_1.EslintResult.for(resultObject, compareSha));
+    let eslintResults = await Promise.all(promises);
     core.debug("Eslint results ->");
-    eslintResults.forEach(result => core.debug(JSON.stringify(result)));
+    eslintResults.forEach((result) => core.debug(JSON.stringify(result)));
     core.debug("<- Eslint results");
     let isFailure = null;
     let warningCount = 0;

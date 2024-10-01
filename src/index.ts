@@ -1,11 +1,7 @@
 import * as core from "@actions/core"
 import { detectChangedFiles, detectChangedFilesInFolder } from "./git_utils"
 import { getExecOutput } from "@actions/exec"
-import {
-  EslintResultInstance,
-  ResultObject,
-  EslintResult,
-} from "./eslint_result"
+import { ResultObject, EslintResult } from "./eslint_result"
 
 async function run() {
   let workingDirectory = core.getInput("working-directory")
@@ -47,13 +43,13 @@ async function run() {
   )
   let eslintJson = JSON.parse(eslintOut)
 
-  let eslintResults: EslintResultInstance[] = eslintJson.map(
-    (resultObject: ResultObject) => new EslintResult(resultObject, compareSha),
+  let promises: Array<Promise<EslintResult>> = eslintJson.map(
+    (resultObject: ResultObject) => EslintResult.for(resultObject, compareSha),
   )
-  await Promise.all(eslintResults.map((r) => r.asyncInitialize()))
+  let eslintResults = await Promise.all(promises)
 
   core.debug("Eslint results ->")
-  eslintResults.forEach(result => core.debug(JSON.stringify(result)))
+  eslintResults.forEach((result) => core.debug(JSON.stringify(result)))
   core.debug("<- Eslint results")
 
   let isFailure = null
