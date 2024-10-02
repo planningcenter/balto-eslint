@@ -27,7 +27,7 @@ export async function generateChangeRanges(path: string, compareSha: string) {
     .map((match) => {
       const rangeStart = parseInt(match!.groups!.rangeStart, 10)
       const rangeLength = match!.groups!.rangeLength
-        ? parseInt(match!.groups!.rangeLength) - 1
+        ? parseInt(match!.groups!.rangeLength, 10) - 1
         : 0
 
       return new ChangeRange(rangeStart, rangeStart + rangeLength)
