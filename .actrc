@@ -1,0 +1,2 @@
+# The micro image does not have git, so we need the medium image
+-P ubuntu-latest=catthehacker/ubuntu:act-latest

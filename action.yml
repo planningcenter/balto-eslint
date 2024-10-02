@@ -7,24 +7,22 @@ branding:
   icon: life-buoy
   color: orange
 inputs:
-  extensions:
-    description: "A comma separated list of extensions to run on"
-    required: false
-    default: "js"
-  conclusionLevel:
-    description: 'Which check run conclusion type to use when annotations are created ("neutral" or "failure" are most common)'
-    required: false
-    default: "neutral"
-  failureLevel:
+  failure-level:
     description: 'The lowest annotation level to fail on ("warning" or "error")'
     required: false
     default: "error"
-  dependencyInstallMode:
-    description: "'smart'  or 'none'. Control how dependencies are installed (if
-      at all). Smart (requires yarn) will attempt to install the least amount of
-      packages to successfully run eslint."
+  conclusion-level:
+    description: 'Action conclusion ("success" or "failure") if annotations of the failure-level were created'
     required: false
-    default: 'smart'
+    default: "success"
+  working-directory:
+    description: Which directory to run the action in
+    required: false
+    default: "."
 outputs:
-  issuesCount:
-    description: "Number of eslint violations found"
+  warning-count:
+    description: "Number of relevant warnings found"
+  error-count:
+    description: "Number of relevant errors found"
+  total-count:
+    description: "Number of relevant warnings and errors"
