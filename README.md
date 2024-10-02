@@ -15,6 +15,7 @@ name: Balto
 on: [pull_request]
 
 jobs:
+  # Note: the name of this job will be how annotations are labeled
   balto-eslint:
     runs-on: ubuntu-latest
     steps:
