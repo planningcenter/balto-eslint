@@ -24,14 +24,14 @@
         "cp test/snapshots/base/* test/v7",
         "cp test/snapshots/base/* test/v8",
         "cp test/snapshots/base/* test/v9",
-        "git add . && git commit -m 'Undo simulated changes'",
+        "git add . && git commit -m 'Automated: Undo simulated changes'",
         "echo \"{ \\\"pull_request\\\": { \\\"base\\\": { \\\"sha\\\": \\\"$(git rev-parse HEAD)\\\" } } }\" > test/pull_request_event_payload.json",
-        "git add . && git commit -m 'Update test target sha'",
+        "git add . && git commit -m 'Automated: Update test target sha'",
         "cp test/snapshots/updates/* test/v6",
         "cp test/snapshots/updates/* test/v7",
         "cp test/snapshots/updates/* test/v8",
         "cp test/snapshots/updates/* test/v9",
-        "git add . && git commit -m 'Simulate changes'"
+        "git add . && git commit -m 'Automated: Simulate changes'"
       ]
     }
   }
