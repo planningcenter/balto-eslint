@@ -34,7 +34,7 @@ async function run() {
 
   core.debug(`Changed files: ${changedFiles}`)
 
-  let { stdout: eslintOut } = await getExecOutput(
+  let { stdout: eslintOut, exitCode } = await getExecOutput(
     "npx eslint --format=json",
     changedFiles,
     // Eslint will return exit code 1 if it finds linting problems, but that is
@@ -42,6 +42,7 @@ async function run() {
     { ignoreReturnCode: true },
   )
   let eslintJson = JSON.parse(eslintOut)
+  core.debug(`Eslint exit code: ${exitCode}`)
 
   let promises: Array<Promise<EslintResult>> = eslintJson.map(
     (resultObject: ResultObject) => EslintResult.for(resultObject, compareSha),

@@ -26363,11 +26363,12 @@ async function run() {
         changedFiles = await (0, git_utils_1.detectChangedFiles)(compareSha);
     }
     core.debug(`Changed files: ${changedFiles}`);
-    let { stdout: eslintOut } = await (0, exec_1.getExecOutput)("npx eslint --format=json", changedFiles, 
+    let { stdout: eslintOut, exitCode } = await (0, exec_1.getExecOutput)("npx eslint --format=json", changedFiles, 
     // Eslint will return exit code 1 if it finds linting problems, but that is
     // expected and we don't want to stop execution because of it.
     { ignoreReturnCode: true });
     let eslintJson = JSON.parse(eslintOut);
+    core.debug(`Eslint exit code: ${exitCode}`);
     let promises = eslintJson.map((resultObject) => eslint_result_1.EslintResult.for(resultObject, compareSha));
     let eslintResults = await Promise.all(promises);
     core.debug("Eslint results ->");
