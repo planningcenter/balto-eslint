@@ -1,5 +1,5 @@
-name: "Balto - Eslint"
-description: "Run eslint on your repo"
+name: "Balto - ESLint"
+description: "Run ESLint on your repo"
 runs:
   using: node20
   main: dist/index.js
