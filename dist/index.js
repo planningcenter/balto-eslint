@@ -26363,7 +26363,15 @@ async function run() {
         changedFiles = await (0, git_utils_1.detectChangedFiles)(compareSha);
     }
     core.debug(`Changed files: ${changedFiles}`);
-    let { stdout: eslintOut, exitCode } = await (0, exec_1.getExecOutput)("npx eslint --format=json", changedFiles, 
+    let extensions = core.getInput("extensions").split(",");
+    core.debug(`Extensions: ${extensions}`);
+    let changedFilesMatchingExtensions = changedFiles.filter((file) => extensions.some((ext) => file.endsWith(ext)));
+    core.debug(`Changed files matching extensions: ${changedFilesMatchingExtensions}`);
+    // Bail out early if the file list is empty (older ESLint versions will
+    // complain if the list is empty)
+    if (changedFilesMatchingExtensions.length === 0)
+        return;
+    let { stdout: eslintOut, exitCode } = await (0, exec_1.getExecOutput)("npx eslint --format=json", changedFilesMatchingExtensions, 
     // Eslint will return exit code 1 if it finds linting problems, but that is
     // expected and we don't want to stop execution because of it.
     { ignoreReturnCode: true });

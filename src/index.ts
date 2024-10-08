@@ -34,9 +34,22 @@ async function run() {
 
   core.debug(`Changed files: ${changedFiles}`)
 
+  let extensions = core.getInput("extensions").split(",")
+  core.debug(`Extensions: ${extensions}`)
+  let changedFilesMatchingExtensions = changedFiles.filter((file) =>
+    extensions.some((ext) => file.endsWith(ext)),
+  )
+  core.debug(
+    `Changed files matching extensions: ${changedFilesMatchingExtensions}`,
+  )
+
+  // Bail out early if the file list is empty (older ESLint versions will
+  // complain if the list is empty)
+  if (changedFilesMatchingExtensions.length === 0) return
+
   let { stdout: eslintOut, exitCode } = await getExecOutput(
     "npx eslint --format=json",
-    changedFiles,
+    changedFilesMatchingExtensions,
     // Eslint will return exit code 1 if it finds linting problems, but that is
     // expected and we don't want to stop execution because of it.
     { ignoreReturnCode: true },
