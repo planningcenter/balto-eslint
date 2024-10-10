@@ -3,10 +3,10 @@ import { ChangeRange, generateChangeRanges } from "./git_utils"
 
 export type ResultObject = {
   filePath: string
-  messages: EslintMessage[]
+  messages: ESLintMessage[]
 }
 
-type EslintMessage = {
+type ESLintMessage = {
   ruleId: string
   severity: Severity
   message: string
@@ -24,22 +24,22 @@ enum Severity {
   Error = 2,
 }
 
-export class EslintResult {
+export class ESLintResult {
   public relevantWarningCount: number = 0
   public relevantErrorCount: number = 0
   private resultObject: ResultObject
   private changeRanges: ChangeRange[]
-  private relevantMessages: EslintMessage[] = []
+  private relevantMessages: ESLintMessage[] = []
 
   static async for(
     resultObject: ResultObject,
     compareSha: string,
-  ): Promise<EslintResult> {
+  ): Promise<ESLintResult> {
     const changeRanges = await generateChangeRanges(
       resultObject.filePath,
       compareSha,
     )
-    return new EslintResult(resultObject, changeRanges)
+    return new ESLintResult(resultObject, changeRanges)
   }
 
   constructor(resultObject: ResultObject, changeRanges: ChangeRange[]) {

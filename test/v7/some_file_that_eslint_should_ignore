@@ -1,0 +1,4 @@
+class EslintShouldIgnoreThis
+    def evenThoughItsWeird (*)
+ end
+ end

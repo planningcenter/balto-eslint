@@ -31,6 +31,7 @@ jobs:
 | `failure-level` | The lowest annotation level to fail on ("warning or "error"") | no | `"error"` |
 | `conclusion-level` | Action conclusion ("success" or "failure") if annotations of the failure-level were created. | no | `"success"` |
 | `working-directory` | Which directory to run the action in | no | `"."` |
+| `extensions` | A comma separated list of extensions to run ESLint on. | no | `".js,.ts,.jsx,.tsx,.mjs,.cjs"` |
 
 ## Outputs
 

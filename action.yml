@@ -1,5 +1,5 @@
-name: "Balto - Eslint"
-description: "Run eslint on your repo"
+name: "Balto - ESLint"
+description: "Run ESLint on your repo"
 runs:
   using: node20
   main: dist/index.js
@@ -19,6 +19,10 @@ inputs:
     description: Which directory to run the action in
     required: false
     default: "."
+  extensions:
+    description: A comma separated list of extensions to run ESLint on.
+    required: false
+    default: ".js,.ts,.jsx,.tsx,.mjs,.cjs"
 outputs:
   warning-count:
     description: "Number of relevant warnings found"
