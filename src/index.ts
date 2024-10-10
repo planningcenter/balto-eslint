@@ -1,7 +1,7 @@
 import * as core from "@actions/core"
 import { detectChangedFiles, detectChangedFilesInFolder } from "./git_utils"
 import { getExecOutput } from "@actions/exec"
-import { ResultObject, EslintResult } from "./eslint_result"
+import { ResultObject, ESLintResult } from "./eslint_result"
 
 async function run() {
   let workingDirectory = core.getInput("working-directory")
@@ -34,9 +34,22 @@ async function run() {
 
   core.debug(`Changed files: ${changedFiles}`)
 
+  let extensions = core.getInput("extensions").split(",")
+  core.debug(`Extensions: ${extensions}`)
+  let changedFilesMatchingExtensions = changedFiles.filter((file) =>
+    extensions.some((ext) => file.endsWith(ext)),
+  )
+  core.debug(
+    `Changed files matching extensions: ${changedFilesMatchingExtensions}`,
+  )
+
+  // Bail out early if the file list is empty (older ESLint versions will
+  // complain if the list is empty)
+  if (changedFilesMatchingExtensions.length === 0) return
+
   let { stdout: eslintOut, exitCode } = await getExecOutput(
     "npx eslint --format=json",
-    changedFiles,
+    changedFilesMatchingExtensions,
     // Eslint will return exit code 1 if it finds linting problems, but that is
     // expected and we don't want to stop execution because of it.
     { ignoreReturnCode: true },
@@ -44,8 +57,8 @@ async function run() {
   let eslintJson = JSON.parse(eslintOut)
   core.debug(`Eslint exit code: ${exitCode}`)
 
-  let promises: Array<Promise<EslintResult>> = eslintJson.map(
-    (resultObject: ResultObject) => EslintResult.for(resultObject, compareSha),
+  let promises: Array<Promise<ESLintResult>> = eslintJson.map(
+    (resultObject: ResultObject) => ESLintResult.for(resultObject, compareSha),
   )
   let eslintResults = await Promise.all(promises)
 
