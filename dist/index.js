@@ -26176,7 +26176,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.EslintResult = void 0;
+exports.ESLintResult = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const git_utils_1 = __nccwpck_require__(5601);
 var Severity;
@@ -26184,7 +26184,7 @@ var Severity;
     Severity[Severity["Warning"] = 1] = "Warning";
     Severity[Severity["Error"] = 2] = "Error";
 })(Severity || (Severity = {}));
-class EslintResult {
+class ESLintResult {
     relevantWarningCount = 0;
     relevantErrorCount = 0;
     resultObject;
@@ -26192,7 +26192,7 @@ class EslintResult {
     relevantMessages = [];
     static async for(resultObject, compareSha) {
         const changeRanges = await (0, git_utils_1.generateChangeRanges)(resultObject.filePath, compareSha);
-        return new EslintResult(resultObject, changeRanges);
+        return new ESLintResult(resultObject, changeRanges);
     }
     constructor(resultObject, changeRanges) {
         this.resultObject = resultObject;
@@ -26247,7 +26247,7 @@ class EslintResult {
         return this.resultObject.filePath.replace(absoluteFolderPath, "");
     }
 }
-exports.EslintResult = EslintResult;
+exports.ESLintResult = ESLintResult;
 
 
 /***/ }),
@@ -26377,7 +26377,7 @@ async function run() {
     { ignoreReturnCode: true });
     let eslintJson = JSON.parse(eslintOut);
     core.debug(`Eslint exit code: ${exitCode}`);
-    let promises = eslintJson.map((resultObject) => eslint_result_1.EslintResult.for(resultObject, compareSha));
+    let promises = eslintJson.map((resultObject) => eslint_result_1.ESLintResult.for(resultObject, compareSha));
     let eslintResults = await Promise.all(promises);
     core.debug("Eslint results ->");
     eslintResults.forEach((result) => core.debug(JSON.stringify(result)));
