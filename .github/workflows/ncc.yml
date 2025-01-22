@@ -7,6 +7,9 @@ on:
     paths:
       - 'package-lock.json'
       - 'src/**'
+permissions:
+  # Allow dependabot to push updated builds to it's own branch
+  contents: write
 
 jobs:
   ncc-build:
