@@ -26252,7 +26252,7 @@ class ESLintResult {
         let absoluteFolderPath = process.env.GITHUB_WORKSPACE;
         if (!absoluteFolderPath)
             throw new Error("process.env.GITHUB_WORKSPACE was empty");
-        return this.resultObject.filePath.replace(absoluteFolderPath, "");
+        return this.resultObject.filePath.replace(`${absoluteFolderPath}/`, "");
     }
 }
 exports.ESLintResult = ESLintResult;
