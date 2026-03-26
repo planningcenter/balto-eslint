@@ -26350,6 +26350,26 @@ const core = __importStar(__nccwpck_require__(2186));
 const git_utils_1 = __nccwpck_require__(5601);
 const exec_1 = __nccwpck_require__(1514);
 const eslint_result_1 = __nccwpck_require__(7023);
+const fs_1 = __nccwpck_require__(7147);
+function detectPackageManager(directory) {
+    if ((0, fs_1.existsSync)(`${directory}/.pnp.cjs`)) {
+        return "yarn-pnp";
+    }
+    if ((0, fs_1.existsSync)(`${directory}/pnpm-lock.yaml`)) {
+        return "pnpm";
+    }
+    return "npm";
+}
+function eslintCommand(packageManager) {
+    switch (packageManager) {
+        case "yarn-pnp":
+            return "yarn run eslint";
+        case "pnpm":
+            return "pnpm exec eslint";
+        default:
+            return "npx eslint";
+    }
+}
 async function run() {
     let workingDirectory = core.getInput("working-directory");
     if (workingDirectory) {
@@ -26379,7 +26399,9 @@ async function run() {
     // complain if the list is empty)
     if (changedFilesMatchingExtensions.length === 0)
         return;
-    let { stdout: eslintOut, exitCode } = await (0, exec_1.getExecOutput)("npx eslint --format=json", changedFilesMatchingExtensions, 
+    let packageManager = detectPackageManager(process.cwd());
+    core.debug(`Package manager: ${packageManager}`);
+    let { stdout: eslintOut, exitCode } = await (0, exec_1.getExecOutput)(`${eslintCommand(packageManager)} --format=json`, changedFilesMatchingExtensions, 
     // Eslint will return exit code 1 if it finds linting problems, but that is
     // expected and we don't want to stop execution because of it.
     { ignoreReturnCode: true });
