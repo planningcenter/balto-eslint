@@ -4,12 +4,9 @@ import { getExecOutput } from "@actions/exec"
 import { ResultObject, ESLintResult } from "./eslint_result"
 import { existsSync } from "fs"
 
-function detectPackageManager(directory: string): "npm" | "yarn" | "pnpm" {
-  if (
-    existsSync(`${directory}/.pnp.cjs`) ||
-    existsSync(`${directory}/yarn.lock`)
-  ) {
-    return "yarn"
+function detectPackageManager(directory: string): "npm" | "yarn-pnp" | "pnpm" {
+  if (existsSync(`${directory}/.pnp.cjs`)) {
+    return "yarn-pnp"
   }
   if (existsSync(`${directory}/pnpm-lock.yaml`)) {
     return "pnpm"
@@ -17,9 +14,9 @@ function detectPackageManager(directory: string): "npm" | "yarn" | "pnpm" {
   return "npm"
 }
 
-function eslintCommand(packageManager: "npm" | "yarn" | "pnpm"): string {
+function eslintCommand(packageManager: "npm" | "yarn-pnp" | "pnpm"): string {
   switch (packageManager) {
-    case "yarn":
+    case "yarn-pnp":
       return "yarn run eslint"
     case "pnpm":
       return "pnpm exec eslint"
