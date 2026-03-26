@@ -2,6 +2,28 @@ import * as core from "@actions/core"
 import { detectChangedFiles, detectChangedFilesInFolder } from "./git_utils"
 import { getExecOutput } from "@actions/exec"
 import { ResultObject, ESLintResult } from "./eslint_result"
+import { existsSync } from "fs"
+
+function detectPackageManager(directory: string): "npm" | "yarn-pnp" | "pnpm" {
+  if (existsSync(`${directory}/.pnp.cjs`)) {
+    return "yarn-pnp"
+  }
+  if (existsSync(`${directory}/pnpm-lock.yaml`)) {
+    return "pnpm"
+  }
+  return "npm"
+}
+
+function eslintCommand(packageManager: "npm" | "yarn-pnp" | "pnpm"): string {
+  switch (packageManager) {
+    case "yarn-pnp":
+      return "yarn run eslint"
+    case "pnpm":
+      return "pnpm exec eslint"
+    default:
+      return "npx eslint"
+  }
+}
 
 async function run() {
   let workingDirectory = core.getInput("working-directory")
@@ -47,8 +69,11 @@ async function run() {
   // complain if the list is empty)
   if (changedFilesMatchingExtensions.length === 0) return
 
+  let packageManager = detectPackageManager(process.cwd())
+  core.debug(`Package manager: ${packageManager}`)
+
   let { stdout: eslintOut, exitCode } = await getExecOutput(
-    "npx eslint --format=json",
+    `${eslintCommand(packageManager)} --format=json`,
     changedFilesMatchingExtensions,
     // Eslint will return exit code 1 if it finds linting problems, but that is
     // expected and we don't want to stop execution because of it.
